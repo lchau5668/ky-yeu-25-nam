@@ -996,6 +996,144 @@ body.shelf {
   transform: scale(1.08);
 }
 
+
+/* ========================================================
+   MOBILE SINGLE-PAGE 3D FLIP MODE (<= 760px)
+   ======================================================== */
+@media (max-width: 760px) {
+  body {
+    overscroll-behavior: none;
+  }
+  .topbar {
+    flex-wrap: nowrap !important;
+    align-content: center;
+    gap: 8px !important;
+    padding-right: 12px !important;
+    padding-left: 12px !important;
+    height: calc(var(--bar) + env(safe-area-inset-top));
+  }
+  .brand { margin-right: auto; min-width: 0; }
+  .brand small { display: none !important; }
+  .logo { height: 26px; max-width: 40vw; }
+  .page-status {
+    font-size: 13px !important;
+    margin: 0 4px !important;
+    white-space: nowrap !important;
+    display: block !important;
+  }
+  .music-bar {
+    display: inline-flex !important;
+    align-items: center;
+    margin: 0 !important;
+    flex: none !important;
+    order: unset !important;
+  }
+  .sound-btn.icon,
+  .menu-btn {
+    width: 38px !important;
+    height: 38px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    flex: none !important;
+  }
+
+  .stage {
+    position: relative;
+    padding: calc(var(--bar) + env(safe-area-inset-top) + 8px) 0 8px !important;
+    overflow: hidden;
+  }
+
+  /* Single-page centered frame on mobile */
+  .book-frame {
+    --page-w: min(calc(100vw - 20px), calc((100dvh - var(--bar) - env(safe-area-inset-top) - 24px) * 0.7071));
+    position: absolute !important;
+    left: 50% !important;
+    top: calc(var(--bar) + env(safe-area-inset-top) + 8px + max(0px, (100dvh - var(--bar) - env(safe-area-inset-top) - 16px - (var(--page-w) / 0.7071)) / 2)) !important;
+    width: var(--page-w) !important;
+    height: calc(var(--page-w) / 0.7071) !important;
+    max-width: none !important;
+    transform: translateX(-50%) !important;
+    transition: none !important;
+  }
+
+  .book {
+    position: relative;
+    width: 100% !important;
+    height: 100% !important;
+    perspective: 1800px !important;
+    perspective-origin: center center;
+    touch-action: pan-y;
+  }
+
+  .board, .spine, .cast {
+    display: none !important;
+  }
+
+  body.phone.side-left .book-frame,
+  body.phone.side-right .book-frame {
+    transform: translateX(-50%) !important;
+  }
+
+  /* Flatten sheets in mobile mode */
+  body.phone .sheet {
+    position: absolute !important;
+    inset: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    transform: none !important;
+    transform-style: flat !important;
+    clip-path: none !important;
+    pointer-events: none !important;
+    z-index: 1;
+  }
+
+  body.phone .curl-flap,
+  body.phone .curl-shade {
+    display: none !important;
+  }
+
+  /* Mobile Face: 3D paper page card */
+  body.phone .face {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    transform-origin: left center !important;
+    backface-visibility: hidden !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+    will-change: transform, opacity, box-shadow;
+    background: #fff !important;
+  }
+
+  body.phone .face.front,
+  body.phone .face.back {
+    transform: none;
+    border-radius: 8px !important;
+  }
+
+  body.phone .face.doc-face img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: fill !important;
+    display: block !important;
+    pointer-events: none !important;
+  }
+
+  .turn-btn {
+    width: 42px !important;
+    height: 42px !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+    z-index: 25 !important;
+  }
+  .turn-prev { left: 6px !important; }
+  .turn-next { right: 6px !important; }
+}
+
   </style>
 </head>
 <body>
@@ -1282,25 +1420,26 @@ const INLINE_BG_B64 = "data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2Zj
     }
     return blobCache[key] || '';
   }
-  window.ensureNearbyPages = function(cur) {
-    const allSheets = document.querySelectorAll('#book > .sheet');
-    const start = Math.max(0, cur - 3);
-    const end = Math.min(allSheets.length - 1, cur + 3);
+  window.ensureNearbyPages = function(pageNo) {
+    // Preload images for current page and adjacent pages
+    const p = Math.max(1, Math.min(48, Number(pageNo) || 1));
+    const start = Math.max(1, p - 2);
+    const end = Math.min(48, p + 3);
     for (let i = start; i <= end; i++) {
-      allSheets[i].querySelectorAll('img[data-page]').forEach((img) => {
-        const key = img.getAttribute('data-page');
-        if (key && !img.getAttribute('src')) {
-          img.src = getPageUrl(key);
-        }
-      });
+      const img = document.querySelector('#trang-' + i + ' img[data-page]');
+      if (img && !img.getAttribute('src')) {
+        img.src = getPageUrl(img.getAttribute('data-page'));
+      }
     }
   };
-  window.ensureNearbyPages(0);
+  window.ensureNearbyPages(1);
 })();
+
 
 const book = document.querySelector("#book");
 const frame = document.querySelector(".book-frame");
 const sheets = [...book.querySelectorAll(":scope > .sheet")];
+const allFaces = [...book.querySelectorAll(".face.doc-face")];
 const rail = document.querySelector("#rail");
 const menuBtn = document.querySelector("#menu-btn");
 const scrim = document.querySelector("#scrim");
@@ -1308,51 +1447,235 @@ const status = document.querySelector("#page-status");
 const links = [...rail.querySelectorAll("a")];
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const phoneQuery = window.matchMedia("(max-width: 760px)");
-const pageCount = sheets.length * 2;
+const pageCount = 48;
 
-let cursor = 0;
+let cursor = 0;          // Desktop sheet cursor (0 to 24)
+let mobilePage = 1;      // Mobile single page index (1 to 48)
 let busy = false;
 let drag = null;
 let phoneSide = "right";
 let phoneCurl = false;
-const seen = new WeakSet();
 
-function format(value, decimals) {
-  return new Intl.NumberFormat("vi-VN", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value);
+function phoneOn() {
+  return phoneQuery.matches;
 }
 
-function runCounters(face) {
-  if (!face) return;
-  face.querySelectorAll("[data-count]").forEach((el) => {
-    if (seen.has(el)) return;
-    seen.add(el);
-    const target = Number(el.dataset.count);
-    const decimals = Number(el.dataset.decimals || 0);
-    const suffix = el.dataset.suffix || "";
-    if (reduced) {
-      el.textContent = `${format(target, decimals)}${suffix}`;
-      return;
+// Background Music Controller - "Bài ca Trường ĐTCB (Cover)"
+const DEFAULT_BG_VOLUME = 0.35; // Âm lượng vừa phải (35%)
+let bgAudio = null;
+let bgMusicPaused = false;
+let bgVolume = DEFAULT_BG_VOLUME;
+
+try {
+  if (localStorage.getItem("anpham-music-bg") === "off") {
+    bgMusicPaused = true;
+  }
+} catch { /* localStorage protected */ }
+
+function ensureBgMusic() {
+  if (!bgAudio) {
+    bgAudio = new Audio();
+    bgAudio.src = window.INLINE_BG_MUSIC || encodeURI("audio/Background_Bài ca Trường ĐTCB (Cover)1.mp3");
+    bgAudio.loop = true; // Auto repeat
+    bgAudio.volume = bgVolume;
+    bgAudio.preload = "auto";
+
+    bgAudio.addEventListener("ended", () => {
+      bgAudio.currentTime = 0;
+      bgAudio.play().catch(() => {});
+    });
+
+    bgAudio.addEventListener("error", () => {
+      if (!window.INLINE_BG_MUSIC && !bgAudio.dataset.triedFallback) {
+        bgAudio.dataset.triedFallback = "1";
+        bgAudio.src = "audio/bg-truong-dtcb.mp3";
+        if (!bgMusicPaused) bgAudio.play().catch(() => {});
+      }
+    });
+  }
+  return bgAudio;
+}
+
+function startBed() {
+  if (bgMusicPaused) return;
+  const audio = ensureBgMusic();
+  if (audio.paused) {
+    const p = audio.play();
+    if (p) {
+      p.then(() => updateMusicUI()).catch(() => updateMusicUI());
     }
-    const start = performance.now();
-    function frame(now) {
-      const t = Math.min(1, (now - start) / 900);
-      const eased = 1 - (1 - t) ** 3;
-      el.textContent = `${format(target * eased, decimals)}${suffix}`;
-      if (t < 1) requestAnimationFrame(frame);
+  } else {
+    updateMusicUI();
+  }
+}
+
+function pauseBed() {
+  bgMusicPaused = true;
+  try { localStorage.setItem("anpham-music-bg", "off"); } catch {}
+  if (bgAudio) bgAudio.pause();
+  updateMusicUI();
+}
+
+function resumeBed() {
+  bgMusicPaused = false;
+  try { localStorage.setItem("anpham-music-bg", "on"); } catch {}
+  startBed();
+  updateMusicUI();
+}
+
+function toggleBed() {
+  if (bgMusicPaused || (bgAudio && bgAudio.paused)) {
+    resumeBed();
+  } else {
+    pauseBed();
+  }
+}
+
+const iconMusicPlay = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+const iconMusicMute = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`;
+
+function updateMusicUI() {
+  const btn = document.querySelector("#music-toggle");
+  if (!btn) return;
+  const isPlaying = bgAudio && !bgAudio.paused && !bgMusicPaused;
+  btn.innerHTML = isPlaying ? iconMusicPlay : iconMusicMute;
+  btn.setAttribute("aria-pressed", String(isPlaying));
+  btn.setAttribute("aria-label", isPlaying ? "Tắt nhạc nền (Bài ca Trường ĐTCB)" : "Bật nhạc nền (Bài ca Trường ĐTCB)");
+  btn.setAttribute("title", isPlaying ? "Tắt nhạc nền (Bài ca Trường ĐTCB)" : "Bật nhạc nền (Bài ca Trường ĐTCB)");
+  btn.classList.toggle("is-active", Boolean(isPlaying));
+}
+
+let flipAudio = null;
+
+function playFlip() {
+  if (reduced) return;
+  if (!bgMusicPaused) startBed();
+  const src = window.INLINE_FLIP_SOUND || "audio/lat_giay.mp3";
+  if (!flipAudio) {
+    flipAudio = new Audio(src);
+    flipAudio.preload = "auto";
+    flipAudio.volume = 0.55;
+  }
+  try {
+    flipAudio.currentTime = 0;
+    const pending = flipAudio.play();
+    if (pending) pending.catch(() => {});
+  } catch { /* browser pending gesture */ }
+}
+
+// -------------------------------------------------------------
+// MOBILE 1-PAGE FLIP ENGINE
+// -------------------------------------------------------------
+function renderMobileStack() {
+  if (window.ensureNearbyPages) window.ensureNearbyPages(mobilePage);
+
+  allFaces.forEach((face, index) => {
+    const p = index + 1;
+    face.style.transition = "";
+    face.style.boxShadow = "";
+    face.style.opacity = "";
+    face.style.transform = "";
+
+    if (p === mobilePage) {
+      face.style.display = "block";
+      face.style.zIndex = "10";
+      face.style.pointerEvents = "auto";
+      face.setAttribute("aria-hidden", "false");
+    } else if (p === mobilePage + 1) {
+      face.style.display = "block";
+      face.style.zIndex = "9";
+      face.style.pointerEvents = "none";
+      face.setAttribute("aria-hidden", "true");
+    } else {
+      face.style.display = "none";
+      face.style.pointerEvents = "none";
+      face.setAttribute("aria-hidden", "true");
     }
-    requestAnimationFrame(frame);
   });
+
+  status.textContent = `Trang ${mobilePage} / ${pageCount}`;
+  updateTurnButtons();
+  highlightActiveMenu("trang-" + mobilePage);
+  history.replaceState(null, "", `#trang-${mobilePage}`);
 }
 
+function flipMobileNext() {
+  if (busy || mobilePage >= pageCount) return;
+  busy = true;
+  playFlip();
+
+  const curFace = document.getElementById("trang-" + mobilePage);
+  const nextFace = document.getElementById("trang-" + (mobilePage + 1));
+
+  if (window.ensureNearbyPages) window.ensureNearbyPages(mobilePage + 1);
+
+  if (nextFace) {
+    nextFace.style.display = "block";
+    nextFace.style.zIndex = "9";
+    nextFace.style.opacity = "1";
+    nextFace.style.transform = "none";
+  }
+
+  if (curFace) {
+    curFace.style.zIndex = "10";
+    curFace.style.transition = "transform 0.42s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.42s ease, box-shadow 0.42s ease";
+    curFace.style.transform = "rotateY(-92deg) scale(0.97)";
+    curFace.style.boxShadow = "-20px 12px 30px rgba(0, 0, 0, 0.38)";
+    curFace.style.opacity = "0.35";
+  }
+
+  setTimeout(() => {
+    mobilePage += 1;
+    renderMobileStack();
+    busy = false;
+  }, 430);
+}
+
+function flipMobilePrev() {
+  if (busy || mobilePage <= 1) return;
+  busy = true;
+  playFlip();
+
+  const curFace = document.getElementById("trang-" + mobilePage);
+  const prevFace = document.getElementById("trang-" + (mobilePage - 1));
+
+  if (window.ensureNearbyPages) window.ensureNearbyPages(mobilePage - 1);
+
+  if (prevFace) {
+    prevFace.style.display = "block";
+    prevFace.style.zIndex = "12";
+    prevFace.style.transform = "rotateY(-92deg) scale(0.97)";
+    prevFace.style.boxShadow = "-20px 12px 30px rgba(0, 0, 0, 0.38)";
+    prevFace.style.opacity = "0.35";
+
+    // Force browser reflow before transition
+    prevFace.offsetHeight;
+
+    prevFace.style.transition = "transform 0.42s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.42s ease, box-shadow 0.42s ease";
+    prevFace.style.transform = "rotateY(0deg) scale(1)";
+    prevFace.style.boxShadow = "0 10px 28px rgba(0, 0, 0, 0.22)";
+    prevFace.style.opacity = "1";
+  }
+
+  setTimeout(() => {
+    mobilePage -= 1;
+    renderMobileStack();
+    busy = false;
+  }, 430);
+}
+
+function goToMobilePage(target) {
+  target = Math.max(1, Math.min(pageCount, Number(target) || 1));
+  if (target === mobilePage) return;
+  mobilePage = target;
+  renderMobileStack();
+}
+
+// -------------------------------------------------------------
+// DESKTOP 2-PAGE SPREAD ENGINE
+// -------------------------------------------------------------
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
-}
-
-function easeOut(t) {
-  return 1 - (1 - t) ** 3;
 }
 
 function easeInOut(t) {
@@ -1364,30 +1687,6 @@ function pageBox() {
   const width = sheets[0].offsetWidth;
   const height = sheets[0].offsetHeight;
   return { left: box.left + box.width / 2, top: box.top, width, height };
-}
-
-function phoneOn() {
-  return phoneQuery.matches;
-}
-
-function applyPhoneFrame() {
-  const on = phoneOn();
-  document.body.classList.toggle("phone", on);
-  document.body.classList.toggle("side-left", on && phoneSide === "left");
-  document.body.classList.toggle("side-right", on && phoneSide === "right");
-  if (!frame.classList.contains("is-live")) frame.style.transform = "";
-}
-
-function syncFrameToTurn(turn) {
-  if (!phoneOn()) return;
-  frame.classList.add("is-live");
-  frame.style.transform = `translateX(${(-75 + 50 * clamp(turn, 0, 1)).toFixed(2)}%)`;
-}
-
-function releaseFrame() {
-  frame.classList.remove("is-live");
-  frame.style.transform = "";
-  applyPhoneFrame();
 }
 
 function clipHalf(w, h, nx, ny, midX, midY, keepPositive) {
@@ -1534,128 +1833,15 @@ function curl(sheet, angle, corner = "bottom", point = null) {
   }
 }
 
-// Background Music Controller - "Bài ca Trường ĐTCB (Cover)"
-const DEFAULT_BG_VOLUME = 0.35; // Âm lượng vừa phải (35%)
-let bgAudio = null;
-let bgMusicPaused = false;
-let bgVolume = DEFAULT_BG_VOLUME;
-
-try {
-  // Use unique key so previous 'off' setting from old demo does not mute this song
-  if (localStorage.getItem("anpham-music-bg") === "off") {
-    bgMusicPaused = true;
-  }
-} catch { /* localStorage protected */ }
-
-function ensureBgMusic() {
-  if (!bgAudio) {
-    bgAudio = new Audio();
-    bgAudio.src = window.INLINE_BG_MUSIC || encodeURI("audio/Background_Bài ca Trường ĐTCB (Cover)1.mp3");
-    bgAudio.loop = true; // Auto repeat
-    bgAudio.volume = bgVolume;
-    bgAudio.preload = "auto";
-
-    // Auto-repeat event listener for maximum browser compatibility
-    bgAudio.addEventListener("ended", () => {
-      bgAudio.currentTime = 0;
-      bgAudio.play().catch(() => {});
-    });
-
-    // Fallback if filename encoding varies
-    bgAudio.addEventListener("error", () => {
-      if (!window.INLINE_BG_MUSIC && !bgAudio.dataset.triedFallback) {
-        bgAudio.dataset.triedFallback = "1";
-        bgAudio.src = "audio/bg-truong-dtcb.mp3";
-        if (!bgMusicPaused) bgAudio.play().catch(() => {});
-      }
-    });
-  }
-  return bgAudio;
-}
-
-function startBed() {
-  if (bgMusicPaused) return;
-  const audio = ensureBgMusic();
-  if (audio.paused) {
-    const p = audio.play();
-    if (p) {
-      p.then(() => {
-        updateMusicUI();
-      }).catch(() => {
-        updateMusicUI();
-      });
-    }
-  } else {
-    updateMusicUI();
-  }
-}
-
-function pauseBed() {
-  bgMusicPaused = true;
-  try { localStorage.setItem("anpham-music-bg", "off"); } catch {}
-  if (bgAudio) bgAudio.pause();
-  updateMusicUI();
-}
-
-function resumeBed() {
-  bgMusicPaused = false;
-  try { localStorage.setItem("anpham-music-bg", "on"); } catch {}
-  startBed();
-  updateMusicUI();
-}
-
-function toggleBed() {
-  if (bgMusicPaused || (bgAudio && bgAudio.paused)) {
-    resumeBed();
-  } else {
-    pauseBed();
-  }
-}
-
-const iconMusicPlay = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
-const iconMusicMute = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`;
-
-function updateMusicUI() {
-  const btn = document.querySelector("#music-toggle");
-  if (!btn) return;
-  const isPlaying = bgAudio && !bgAudio.paused && !bgMusicPaused;
-  btn.innerHTML = isPlaying ? iconMusicPlay : iconMusicMute;
-  btn.setAttribute("aria-pressed", String(isPlaying));
-  btn.setAttribute("aria-label", isPlaying ? "Tắt nhạc nền (Bài ca Trường ĐTCB)" : "Bật nhạc nền (Bài ca Trường ĐTCB)");
-  btn.setAttribute("title", isPlaying ? "Tắt nhạc nền (Bài ca Trường ĐTCB)" : "Bật nhạc nền (Bài ca Trường ĐTCB)");
-  btn.classList.toggle("is-active", Boolean(isPlaying));
-}
-
-let flipAudio = null;
-
-function playFlip() {
-  if (reduced) return;
-  if (!bgMusicPaused) startBed();
-  const src = window.INLINE_FLIP_SOUND || "audio/lat_giay.mp3";
-  if (!flipAudio) {
-    flipAudio = new Audio(src);
-    flipAudio.preload = "auto";
-    flipAudio.volume = 0.55;
-  }
-  try {
-    flipAudio.currentTime = 0;
-    const pending = flipAudio.play();
-    if (pending) pending.catch(() => {});
-  } catch { /* browser pending gesture */ }
-}
-
-function applySheet(sheet, angle, corner = "bottom", point = null) {
-  curl(sheet, angle, corner || "bottom", point);
-}
-
 function visibleFaces() {
   const right = cursor < sheets.length ? sheets[cursor].querySelector(".front") : null;
   const left = cursor > 0 ? sheets[cursor - 1].querySelector(".back") : null;
   return { left, right };
 }
 
-function stack() {
-  if (window.ensureNearbyPages) window.ensureNearbyPages(cursor);
+function stackDesktop() {
+  if (window.ensureNearbyPages) window.ensureNearbyPages(cursor * 2 + 1);
+
   sheets.forEach((sheet, i) => {
     const near = i >= cursor - 2 && i <= cursor + 1;
     if (!near) {
@@ -1665,151 +1851,132 @@ function stack() {
     }
     sheet.style.display = "";
     const turned = i < cursor;
-    applySheet(sheet, turned ? -180 : 0);
+    curl(sheet, turned ? -180 : 0);
     sheet.style.zIndex = turned ? String(20 + i) : String(60 - i);
     sheet.style.pointerEvents = i === cursor || i === cursor - 1 ? "auto" : "none";
   });
+
   const { left, right } = visibleFaces();
-  const shown = phoneOn() ? (phoneSide === "left" ? left : right) : null;
   sheets.forEach((sheet) => {
     sheet.querySelectorAll(".face:not(.curl-print)").forEach((face) => {
-      const visible = phoneOn() ? face === shown : face === left || face === right;
+      const visible = face === left || face === right;
       face.setAttribute("aria-hidden", visible ? "false" : "true");
     });
   });
-  const open = [left, right].filter(Boolean);
-  const chapters = new Set(open.map((face) => face.dataset.chapter));
-  if (phoneOn()) {
-    const pageNo = phoneSide === "right" && cursor < sheets.length
-      ? cursor * 2 + 1
-      : phoneSide === "left" && cursor > 0
-        ? cursor * 2
-        : 0;
-    status.textContent = pageNo ? `${pageNo} / ${pageCount}` : (phoneSide === "left" ? "Bìa trong" : "Hết");
-  } else if (cursor === 0) status.textContent = `Trang 1 / ${pageCount}`;
+
+  if (cursor === 0) status.textContent = `Trang 1 / ${pageCount}`;
   else if (cursor === sheets.length) status.textContent = `Trang ${pageCount} / ${pageCount}`;
   else status.textContent = `Trang ${cursor * 2}–${cursor * 2 + 1} / ${pageCount}`;
-  applyPhoneFrame();
-  updateTurnButtons();
-  links.forEach((link) => {
-    const face = document.getElementById(link.getAttribute("href").slice(1));
-    link.classList.toggle("is-active", Boolean(face && chapters.has(face.dataset.chapter)));
-  });
-  runCounters(left);
-  runCounters(right);
-}
 
-function remember() {
-  const { left, right } = visibleFaces();
-  const face = phoneOn() ? (phoneSide === "left" ? left : right) : (right || left);
+  updateTurnButtons();
+  if (right) highlightActiveMenu(right.id);
+  else if (left) highlightActiveMenu(left.id);
+
+  const face = right || left;
   if (face?.id) history.replaceState(null, "", `#${face.id}`);
 }
 
-function glide(sheet, from, to, done, corner = "bottom", fromPoint = null) {
+function glideDesktop(sheet, from, to, done, corner = "bottom") {
   busy = true;
   sheet.style.display = "";
   sheet.style.zIndex = "220";
   if (reduced) {
-    applySheet(sheet, to, corner);
+    curl(sheet, to, corner);
     done();
     return;
   }
   const page = pageBox();
   const start = performance.now();
   function frame(now) {
-    const t = Math.min(1, (now - start) / 1000);
+    const t = Math.min(1, (now - start) / 950);
     const eased = easeInOut(t);
     const angle = from + (to - from) * eased;
-    let point = null;
-    if (fromPoint) {
-      const scripted = scriptedPoint(Math.abs(angle) / 180, page.width, page.height, corner || "bottom");
-      const blend = Math.min(1, t / 0.28);
-      point = {
-        x: fromPoint.x * (1 - blend) + scripted.x * blend,
-        y: fromPoint.y * (1 - blend) + scripted.y * blend,
-      };
-    }
-    applySheet(sheet, angle, corner, point);
-    if (phoneCurl) syncFrameToTurn(Math.abs(angle) / 180);
+    curl(sheet, angle, corner);
     if (t < 1) requestAnimationFrame(frame);
     else done();
   }
   requestAnimationFrame(frame);
 }
 
-function go(to, corner = "bottom", follow = false) {
+function goDesktop(to, corner = "bottom") {
   to = clamp(to, 0, sheets.length);
   if (busy || to === cursor) {
-    if (to === cursor) {
-      stack();
-      remember();
-    }
+    if (to === cursor) stackDesktop();
     return;
   }
   const forward = to > cursor;
-  if (reduced || Math.abs(to - cursor) > 1 || (phoneOn() && !follow)) {
-    cursor = to;
-    stack();
-    remember();
-    return;
-  }
-  phoneCurl = Boolean(follow);
   const sheet = sheets[forward ? cursor : cursor - 1];
   playFlip();
-  glide(sheet, forward ? 0 : -180, forward ? -180 : 0, () => {
+  glideDesktop(sheet, forward ? 0 : -180, forward ? -180 : 0, () => {
     cursor = to;
-    if (follow) phoneSide = forward ? "left" : "right";
-    phoneCurl = false;
     busy = false;
     book.classList.remove("is-grabbing");
-    releaseFrame();
-    stack();
-    remember();
+    stackDesktop();
   }, corner);
 }
 
-function updateTurnButtons() {
-  const prev = document.querySelector(".turn-prev");
-  const next = document.querySelector(".turn-next");
-  if (!prev || !next) return;
-  if (phoneOn()) {
-    prev.disabled = cursor <= 0;
-    next.disabled = cursor >= sheets.length && phoneSide === "right";
+// -------------------------------------------------------------
+// UNIFIED DISPATCHER (MOBILE OR DESKTOP)
+// -------------------------------------------------------------
+function syncLayout() {
+  const onPhone = phoneOn();
+  document.body.classList.toggle("phone", onPhone);
+
+  if (onPhone) {
+    // Sync mobilePage from cursor
+    mobilePage = Math.max(1, Math.min(pageCount, cursor * 2 + 1));
+    renderMobileStack();
   } else {
-    prev.disabled = cursor <= 0;
-    next.disabled = cursor >= sheets.length;
+    // Restore all desktop sheet styles
+    allFaces.forEach((f) => {
+      f.style.display = "";
+      f.style.zIndex = "";
+      f.style.transform = "";
+      f.style.transition = "";
+      f.style.opacity = "";
+      f.style.boxShadow = "";
+      f.style.pointerEvents = "";
+    });
+    cursor = Math.floor((mobilePage - 1) / 2);
+    stackDesktop();
   }
 }
 
-function turnPage(direction) {
-  if (phoneOn()) step(direction);
-  else go(cursor + direction);
+function turnNext() {
+  if (phoneOn()) {
+    flipMobileNext();
+  } else {
+    goDesktop(cursor + 1);
+  }
 }
 
-document.querySelector(".turn-prev")?.addEventListener("click", () => turnPage(-1));
-document.querySelector(".turn-next")?.addEventListener("click", () => turnPage(1));
-
-function step(direction) {
-  if (busy) return;
-  if (direction > 0) {
-    if (phoneSide === "left") {
-      phoneSide = "right";
-      stack();
-      remember();
-    } else go(cursor + 1, "bottom", true);
-  } else if (phoneSide === "right") {
-    phoneSide = "left";
-    stack();
-    remember();
-  } else go(cursor - 1, "bottom", true);
+function turnPrev() {
+  if (phoneOn()) {
+    flipMobilePrev();
+  } else {
+    goDesktop(cursor - 1);
+  }
 }
 
-function cursorFor(id) {
-  const face = document.getElementById(id);
-  const sheet = face?.closest(".sheet");
-  const index = sheets.indexOf(sheet);
-  if (index < 0) return -1;
-  return face.classList.contains("back") ? index + 1 : index;
+function updateTurnButtons() {
+  const prevBtn = document.querySelector(".turn-prev");
+  const nextBtn = document.querySelector(".turn-next");
+  if (!prevBtn || !nextBtn) return;
+
+  if (phoneOn()) {
+    prevBtn.disabled = mobilePage <= 1;
+    nextBtn.disabled = mobilePage >= pageCount;
+  } else {
+    prevBtn.disabled = cursor <= 0;
+    nextBtn.disabled = cursor >= sheets.length;
+  }
+}
+
+function highlightActiveMenu(faceId) {
+  links.forEach((link) => {
+    const href = link.getAttribute("href").slice(1);
+    link.classList.toggle("is-active", href === faceId);
+  });
 }
 
 function closeMenu() {
@@ -1818,6 +1985,88 @@ function closeMenu() {
   scrim.hidden = true;
 }
 
+// -------------------------------------------------------------
+// EVENT LISTENERS
+// -------------------------------------------------------------
+document.querySelector(".turn-prev")?.addEventListener("click", turnPrev);
+document.querySelector(".turn-next")?.addEventListener("click", turnNext);
+
+// Mobile Touch & Swipe Gesture
+let touchStartX = 0;
+let touchStartY = 0;
+let touchMoved = false;
+
+book.addEventListener("touchstart", (e) => {
+  if (!phoneOn() || busy) return;
+  const t = e.touches[0];
+  touchStartX = t.clientX;
+  touchStartY = t.clientY;
+  touchMoved = false;
+}, { passive: true });
+
+book.addEventListener("touchmove", (e) => {
+  if (!phoneOn() || busy) return;
+  const t = e.touches[0];
+  const dx = Math.abs(t.clientX - touchStartX);
+  const dy = Math.abs(t.clientY - touchStartY);
+  if (dx > 12 && dx > dy) {
+    touchMoved = true;
+  }
+}, { passive: true });
+
+book.addEventListener("touchend", (e) => {
+  if (!phoneOn() || busy) return;
+  const t = e.changedTouches[0];
+  const dx = t.clientX - touchStartX;
+  const dy = t.clientY - touchStartY;
+
+  // Swipe gesture
+  if (Math.abs(dx) > 36 && Math.abs(dx) > Math.abs(dy)) {
+    if (dx < 0) {
+      flipMobileNext();
+    } else {
+      flipMobilePrev();
+    }
+    return;
+  }
+
+  // Tap navigation: tap left third for prev, tap right third for next
+  if (!touchMoved) {
+    const box = book.getBoundingClientRect();
+    const relX = t.clientX - box.left;
+    if (relX > box.width * 0.7) {
+      flipMobileNext();
+    } else if (relX < box.width * 0.3) {
+      flipMobilePrev();
+    }
+  }
+}, { passive: true });
+
+// Desktop Mouse Drag / Peel
+book.addEventListener("pointerdown", (event) => {
+  if (phoneOn() || busy || event.button !== 0 || drag) return;
+  if (event.target.closest("a, button")) return;
+  event.preventDefault();
+  const box = book.getBoundingClientRect();
+  const spine = box.left + box.width / 2;
+  drag = {
+    id: event.pointerId,
+    startX: event.clientX,
+    side: event.clientX < spine ? "left" : "right",
+  };
+});
+
+window.addEventListener("pointerup", (event) => {
+  if (phoneOn() || !drag) return;
+  const dx = event.clientX - drag.startX;
+  if (Math.abs(dx) > 30) {
+    if (dx < 0 && cursor < sheets.length) goDesktop(cursor + 1);
+    else if (dx > 0 && cursor > 0) goDesktop(cursor - 1);
+  }
+  drag = null;
+});
+
+// Setup Menu click
 menuBtn.addEventListener("click", () => {
   const open = !rail.classList.contains("is-open");
   rail.classList.toggle("is-open", open);
@@ -1830,188 +2079,26 @@ document.addEventListener("click", (event) => {
   const trigger = event.target.closest("[data-goto], a[href^='#']");
   if (!trigger) return;
   const id = trigger.dataset.goto || trigger.getAttribute("href").slice(1);
-  const next = cursorFor(id);
-  if (next < 0) return;
+  const match = id.match(/^trang-(\d+)$/);
+  if (!match) return;
+
   event.preventDefault();
   closeMenu();
-  const face = document.getElementById(id);
-  if (face) phoneSide = face.classList.contains("back") ? "left" : "right";
-  go(next);
+
+  const targetPage = Number(match[1]);
+  if (phoneOn()) {
+    goToMobilePage(targetPage);
+  } else {
+    const targetCursor = Math.floor((targetPage - 1) / 2);
+    goDesktop(targetCursor);
+  }
 });
 
+// Keyboard navigation
 window.addEventListener("keydown", (event) => {
-  if (event.key === "ArrowRight") phoneOn() ? step(1) : go(cursor + 1);
-  if (event.key === "ArrowLeft") phoneOn() ? step(-1) : go(cursor - 1);
+  if (event.key === "ArrowRight") turnNext();
+  if (event.key === "ArrowLeft") turnPrev();
   if (event.key === "Escape") closeMenu();
-});
-
-book.addEventListener("pointerdown", (event) => {
-  if (busy || event.button !== 0 || drag) return;
-  if (event.target.closest("a, button")) return;
-  if (!phoneOn()) event.preventDefault();
-  const box = book.getBoundingClientRect();
-  const py = (event.clientY - box.top) / box.height;
-  const spine = box.left + box.width / 2;
-  drag = {
-    id: event.pointerId,
-    x: event.clientX,
-    y: event.clientY,
-    side: event.clientX < spine ? "left" : "right",
-    corner: py < 0.45 ? "top" : "bottom",
-    radius: Math.max(72, Math.abs(event.clientX - spine)),
-    active: false,
-    lastX: event.clientX,
-    lastT: performance.now(),
-    vx: 0,
-    mode: "curl",
-  };
-  if (!phoneOn()) {
-    try { book.setPointerCapture(event.pointerId); } catch { /* synthetic events */ }
-  }
-});
-
-function onPointerMove(event) {
-  if (!drag || event.pointerId !== drag.id) return;
-  const now = performance.now();
-  const dt = Math.max(8, now - drag.lastT);
-  drag.vx = (event.clientX - drag.lastX) / dt;
-  drag.lastX = event.clientX;
-  drag.lastT = now;
-  const dx = event.clientX - drag.x;
-  const dy = event.clientY - drag.y;
-  if (!drag.active) {
-    if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(dy)) return;
-    const next = dx < 0 && drag.side === "right" && cursor < sheets.length;
-    const prev = dx > 0 && drag.side === "left" && cursor > 0;
-    const slideNext = phoneOn() && dx < 0 && drag.side === "left";
-    const slidePrev = phoneOn() && dx > 0 && drag.side === "right";
-    if (!next && !prev && !slideNext && !slidePrev) return;
-    drag.active = true;
-    if (phoneOn()) {
-      event.preventDefault();
-      try { book.setPointerCapture(event.pointerId); } catch { /* synthetic events */ }
-    }
-    if (slideNext || slidePrev) {
-      drag.mode = "slide";
-      drag.direction = slideNext ? "next" : "prev";
-      frame.classList.add("is-live");
-      book.classList.add("is-grabbing");
-      return;
-    }
-    drag.mode = "curl";
-    phoneCurl = phoneOn();
-    drag.direction = next ? "next" : "prev";
-    drag.sheet = sheets[next ? cursor : cursor - 1];
-    drag.sheet.style.display = "";
-    drag.sheet.style.zIndex = "220";
-    drag.shown = next ? 0 : -180;
-    book.classList.add("is-grabbing");
-    playFlip();
-  }
-  if (drag.mode === "slide") {
-    const width = pageBox().width || 1;
-    const shift = clamp((phoneSide === "left" ? -25 : -75) + ((event.clientX - drag.x) / width) * 50, -75, -25);
-    frame.classList.add("is-live");
-    frame.style.transform = `translateX(${shift.toFixed(2)}%)`;
-    drag.shift = shift;
-    return;
-  }
-  const page = pageBox();
-  const local = { x: event.clientX - page.left, y: event.clientY - page.top };
-  const progress = clamp((page.width - local.x) / (page.width * 2), 0, 1);
-  drag.shown = -progress * 180;
-  drag.point = local;
-  applySheet(drag.sheet, drag.shown, drag.corner, local);
-  if (phoneCurl) syncFrameToTurn(progress);
-}
-
-function onPointerUp(event) {
-  if (!drag || event.pointerId !== drag.id) return;
-  const state = drag;
-  drag = null;
-  if (!state.active) {
-    book.classList.remove("is-grabbing");
-    return;
-  }
-  if (state.mode === "slide") {
-    const width = pageBox().width || 1;
-    const progress = Math.abs(state.lastX - state.x) / width;
-    const flicked = state.direction === "next" ? state.vx < -0.35 : state.vx > 0.35;
-    book.classList.remove("is-grabbing");
-    if (progress > 0.22 || flicked) phoneSide = state.direction === "next" ? "right" : "left";
-    releaseFrame();
-    stack();
-    remember();
-    return;
-  }
-  const progress = state.direction === "next"
-    ? Math.abs(state.shown) / 180
-    : (state.shown + 180) / 180;
-  const flicked = state.direction === "next" ? state.vx < -0.45 : state.vx > 0.45;
-  const commit = progress >= 0.5 || (flicked && progress > 0.12);
-  const dest = state.direction === "next" ? (commit ? -180 : 0) : (commit ? 0 : -180);
-  const cursorBefore = cursor;
-  const to = commit ? cursor + (state.direction === "next" ? 1 : -1) : cursor;
-  glide(state.sheet, state.shown, dest, () => {
-    cursor = to;
-    if (phoneOn() && to !== cursorBefore) phoneSide = state.direction === "next" ? "left" : "right";
-    phoneCurl = false;
-    busy = false;
-    book.classList.remove("is-grabbing");
-    releaseFrame();
-    stack();
-    remember();
-  }, state.corner, state.point);
-}
-
-window.addEventListener("pointermove", onPointerMove);
-window.addEventListener("pointerup", onPointerUp);
-window.addEventListener("pointercancel", onPointerUp);
-
-sheets.forEach((sheet) => {
-  const flap = document.createElement("div");
-  flap.className = "curl-flap";
-  flap.setAttribute("aria-hidden", "true");
-  const print = sheet.querySelector(".back").cloneNode(true);
-  print.classList.add("curl-print");
-  print.removeAttribute("id");
-  print.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
-  print.inert = true;
-  flap.appendChild(print);
-  sheet.appendChild(flap);
-  const shade = document.createElement("div");
-  shade.className = "curl-shade";
-  shade.setAttribute("aria-hidden", "true");
-  sheet.appendChild(shade);
-});
-
-let hoverOn = false;
-book.addEventListener("pointermove", (event) => {
-  if (drag || busy || reduced || phoneOn()) return;
-  const page = pageBox();
-  const box = book.getBoundingClientRect();
-  const y = (event.clientY - box.top) / box.height;
-  const corner = y < 0.5 ? "top" : "bottom";
-  const onRight = cursor < sheets.length && event.clientX > page.left + page.width * 0.84 && event.clientX < page.left + page.width + 12;
-  const onLeft = cursor > 0 && event.clientX < box.left + page.width * 0.16 && event.clientX > box.left - 12;
-  if (!onRight && !onLeft) {
-    if (hoverOn) {
-      hoverOn = false;
-      stack();
-    }
-    return;
-  }
-  hoverOn = true;
-  const sheet = sheets[onRight ? cursor : cursor - 1];
-  sheet.style.display = "";
-  sheet.style.zIndex = "220";
-  const progress = onRight ? 0.07 : 0.93;
-  applySheet(sheet, -progress * 180, corner);
-});
-book.addEventListener("pointerleave", () => {
-  if (drag || busy || !hoverOn) return;
-  hoverOn = false;
-  stack();
 });
 
 // Setup Music Toggle Button
@@ -2032,13 +2119,35 @@ document.addEventListener("pointerdown", onFirstGesture, { passive: true });
 document.addEventListener("touchstart", onFirstGesture, { passive: true });
 document.addEventListener("click", onFirstGesture, { passive: true });
 
-// Initialize navigation and initial stack
-const opened = document.getElementById(location.hash.slice(1));
-if (opened?.classList.contains("back")) phoneSide = "left";
-const initial = cursorFor(location.hash.slice(1));
-cursor = initial >= 0 ? initial : 0;
-stack();
-remember();
+// Create desktop sheet curl flap clones
+sheets.forEach((sheet) => {
+  const flap = document.createElement("div");
+  flap.className = "curl-flap";
+  flap.setAttribute("aria-hidden", "true");
+  const print = sheet.querySelector(".back").cloneNode(true);
+  print.classList.add("curl-print");
+  print.removeAttribute("id");
+  print.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+  print.inert = true;
+  flap.appendChild(print);
+  sheet.appendChild(flap);
+  const shade = document.createElement("div");
+  shade.className = "curl-shade";
+  shade.setAttribute("aria-hidden", "true");
+  sheet.appendChild(shade);
+});
+
+// Initial Hash check
+const initialHash = location.hash.slice(1);
+const initialMatch = initialHash.match(/^trang-(\d+)$/);
+if (initialMatch) {
+  mobilePage = Number(initialMatch[1]);
+  cursor = Math.floor((mobilePage - 1) / 2);
+}
+
+// Initialize layout
+syncLayout();
+phoneQuery.addEventListener("change", syncLayout);
 
 // Initialize music
 ensureBgMusic();
@@ -2046,11 +2155,6 @@ if (!bgMusicPaused) {
   startBed();
 }
 updateMusicUI();
-
-phoneQuery.addEventListener("change", () => {
-  releaseFrame();
-  stack();
-});
 
   </script>
 </body>
