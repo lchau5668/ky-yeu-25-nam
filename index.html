@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Vun đắp tri thức, Kiến tạo tương lai — Kỷ yếu 25 năm Trường Đào tạo cán bộ Agribank</title>
+  <meta name="description" content="Kỷ yếu điện tử 25 năm thành lập Trường Đào tạo cán bộ Agribank (2001 – 2026).">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Kỷ yếu 25 năm Trường Đào tạo cán bộ Agribank (2001 – 2026)">
+  <meta property="og:description" content="Vun đắp tri thức – Kiến tạo tương lai. Ấn phẩm kỷ yếu điện tử lật trang 3D.">
+  <meta property="og:image" content="pages/p01.jpg">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="preload" as="image" href="pages/p01.jpg">
+  <link rel="preload" as="image" href="pages/p02.jpg">
+  <link rel="preload" as="image" href="pages/p03.jpg">
+  <link rel="preload" as="audio" href="audio/lat_giay.mp3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=gh1">
+  <style>
+    .music-bar { display: none !important; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#book">Đi tới sách</a>
+
+  <header class="topbar">
+    <a class="brand" href="#trang-1">
+      <img class="logo" src="logo.png" alt="Agribank">
+      <small>Kỷ yếu 25 năm Trường Đào tạo cán bộ Agribank (2001 – 2026)</small>
+    </a>
+    <p class="page-status" id="page-status" aria-live="polite">Trang 1 / 48</p>
+    <div class="music-bar" role="group" aria-label="Nhạc nền" hidden>
+      <label class="music-pick">
+        <span class="visually-hidden">Chọn bài nhạc</span>
+        <select id="music-track" aria-label="Chọn bài nhạc"></select>
+      </label>
+      <button class="sound-btn icon" id="music-toggle" type="button" aria-pressed="false" aria-label="Tạm dừng nhạc nền"></button>
+      <button class="sound-btn icon" id="music-speaker" type="button" aria-label="Tắt tiếng" aria-pressed="false"></button>
+      <label class="volume">
+        <span class="visually-hidden">Âm lượng</span>
+        <input id="music-volume" type="range" min="0" max="100" step="1" value="0">
+      </label>
+    </div>
+    <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="rail" aria-label="Mục lục">
+      <span class="menu-lines" aria-hidden="true"></span>
+      <span class="menu-label">Mục lục</span>
+    </button>
+  </header>
+
+  <aside class="rail" id="rail">
+    <p class="rail-kicker">Kỷ yếu 2001 – 2026</p>
+    <p class="rail-title">Vun đắp tri thức<br>Kiến tạo tương lai</p>
+    <nav aria-label="Mục lục">
+      <a href="#trang-1"><span>01</span> Bìa kỷ yếu</a>
+      <a href="#trang-3"><span>02</span> Lời mở đầu</a>
+      <a href="#trang-4"><span>03</span> Thư chúc mừng</a>
+      <a href="#trang-6"><span>04</span> 25 năm hình thành &amp; phát triển</a>
+      <a href="#trang-9"><span>05</span> Ban Lãnh đạo qua các thời kỳ</a>
+      <a href="#trang-12"><span>06</span> Mô hình tổ chức &amp; Phòng Tổng hợp</a>
+      <a href="#trang-16"><span>07</span> Phòng Kế toán</a>
+      <a href="#trang-18"><span>08</span> Phòng Kế hoạch</a>
+      <a href="#trang-20"><span>09</span> Phòng QLĐT &amp; Thư viện</a>
+      <a href="#trang-24"><span>10</span> Phòng Nghiên cứu - Giảng dạy</a>
+      <a href="#trang-28"><span>11</span> Kết quả hoạt động 25 năm</a>
+      <a href="#trang-36"><span>12</span> Danh hiệu &amp; Giải thưởng</a>
+      <a href="#trang-40"><span>13</span> Dấu ấn thời gian</a>
+      <a href="#trang-48"><span>14</span> Ban Biên tập (Bìa cuối)</a>
+    </nav>
+    <p class="rail-foot">Kéo mép trang hoặc bấm mũi tên để lật</p>
+  </aside>
+  <div class="scrim" id="scrim" hidden></div>
+
+  <main class="stage">
+    <div class="book-frame">
+    <div class="book" id="book">
+      <div class="board board-left">
+        <p class="board-kicker">Kỷ yếu điện tử</p>
+        <p class="board-title">25 năm<br>Trường ĐTCB</p>
+        <p class="board-years">2001 — 2026</p>
+      </div>
+      <div class="board board-right">
+        <p class="board-title">Hết</p>
+        <p>Trường Đào tạo cán bộ Agribank · Ghi dấu hành trình – Lan tỏa giá trị.</p>
+      </div>
+      <div class="spine" aria-hidden="true"></div>
+      <div class="cast" aria-hidden="true"></div>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-1" data-chapter="bia">
+          <img src="pages/p01.jpg" alt="Trang 1" loading="eager" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-2" data-chapter="loi-mo-dau">
+          <img src="pages/p02.jpg" alt="Trang 2" loading="eager" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-3" data-chapter="loi-mo-dau">
+          <img src="pages/p03.jpg" alt="Trang 3" loading="eager" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-4" data-chapter="thu-chuc-mung">
+          <img src="pages/p04.jpg" alt="Trang 4" loading="eager" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-5" data-chapter="thu-chuc-mung">
+          <img src="pages/p05.jpg" alt="Trang 5" loading="eager" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-6" data-chapter="lich-su">
+          <img src="pages/p06.jpg" alt="Trang 6" loading="eager" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-7" data-chapter="lich-su">
+          <img src="pages/p07.jpg" alt="Trang 7" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-8" data-chapter="lanh-dao">
+          <img src="pages/p08.jpg" alt="Trang 8" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-9" data-chapter="lanh-dao">
+          <img src="pages/p09.jpg" alt="Trang 9" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-10" data-chapter="lanh-dao">
+          <img src="pages/p10.jpg" alt="Trang 10" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-11" data-chapter="lanh-dao">
+          <img src="pages/p11.jpg" alt="Trang 11" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-12" data-chapter="to-chuc">
+          <img src="pages/p12.jpg" alt="Trang 12" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-13" data-chapter="to-chuc">
+          <img src="pages/p13.jpg" alt="Trang 13" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-14" data-chapter="to-chuc">
+          <img src="pages/p14.jpg" alt="Trang 14" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-15" data-chapter="to-chuc">
+          <img src="pages/p15.jpg" alt="Trang 15" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-16" data-chapter="phong-ke-toan">
+          <img src="pages/p16.jpg" alt="Trang 16" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-17" data-chapter="phong-ke-toan">
+          <img src="pages/p17.jpg" alt="Trang 17" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-18" data-chapter="phong-ke-hoach">
+          <img src="pages/p18.jpg" alt="Trang 18" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-19" data-chapter="phong-ke-hoach">
+          <img src="pages/p19.jpg" alt="Trang 19" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-20" data-chapter="phong-qldt">
+          <img src="pages/p20.jpg" alt="Trang 20" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-21" data-chapter="phong-qldt">
+          <img src="pages/p21.jpg" alt="Trang 21" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-22" data-chapter="phong-qldt">
+          <img src="pages/p22.jpg" alt="Trang 22" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-23" data-chapter="phong-qldt">
+          <img src="pages/p23.jpg" alt="Trang 23" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-24" data-chapter="phong-ncgd">
+          <img src="pages/p24.jpg" alt="Trang 24" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-25" data-chapter="phong-ncgd">
+          <img src="pages/p25.jpg" alt="Trang 25" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-26" data-chapter="phong-ncgd">
+          <img src="pages/p26.jpg" alt="Trang 26" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-27" data-chapter="phong-ncgd">
+          <img src="pages/p27.jpg" alt="Trang 27" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-28" data-chapter="ket-qua">
+          <img src="pages/p28.jpg" alt="Trang 28" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-29" data-chapter="ket-qua">
+          <img src="pages/p29.jpg" alt="Trang 29" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-30" data-chapter="ket-qua">
+          <img src="pages/p30.jpg" alt="Trang 30" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-31" data-chapter="ket-qua">
+          <img src="pages/p31.jpg" alt="Trang 31" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-32" data-chapter="ket-qua">
+          <img src="pages/p32.jpg" alt="Trang 32" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-33" data-chapter="ket-qua">
+          <img src="pages/p33.jpg" alt="Trang 33" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-34" data-chapter="ket-qua">
+          <img src="pages/p34.jpg" alt="Trang 34" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-35" data-chapter="ket-qua">
+          <img src="pages/p35.jpg" alt="Trang 35" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-36" data-chapter="danh-hieu">
+          <img src="pages/p36.jpg" alt="Trang 36" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-37" data-chapter="danh-hieu">
+          <img src="pages/p37.jpg" alt="Trang 37" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-38" data-chapter="danh-hieu">
+          <img src="pages/p38.jpg" alt="Trang 38" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-39" data-chapter="danh-hieu">
+          <img src="pages/p39.jpg" alt="Trang 39" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-40" data-chapter="dau-an">
+          <img src="pages/p40.jpg" alt="Trang 40" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-41" data-chapter="dau-an">
+          <img src="pages/p41.jpg" alt="Trang 41" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-42" data-chapter="dau-an">
+          <img src="pages/p42.jpg" alt="Trang 42" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-43" data-chapter="dau-an">
+          <img src="pages/p43.jpg" alt="Trang 43" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-44" data-chapter="dau-an">
+          <img src="pages/p44.jpg" alt="Trang 44" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-45" data-chapter="dau-an">
+          <img src="pages/p45.jpg" alt="Trang 45" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-46" data-chapter="dau-an">
+          <img src="pages/p46.jpg" alt="Trang 46" loading="lazy" decoding="async">
+        </div>
+      </article>
+
+      <article class="sheet">
+        <div class="face front doc-face" id="trang-47" data-chapter="dau-an">
+          <img src="pages/p47.jpg" alt="Trang 47" loading="lazy" decoding="async">
+        </div>
+        <div class="face back doc-face" id="trang-48" data-chapter="bia-cuoi">
+          <img src="pages/p48.jpg" alt="Trang 48" loading="lazy" decoding="async">
+        </div>
+      </article>
+    </div>
+    </div>
+    <button class="turn-btn turn-prev" type="button" aria-label="Trang trước" disabled>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.6 5.4 8 12l6.6 6.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="turn-btn turn-next" type="button" aria-label="Trang sau">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.4 5.4 16 12l-6.6 6.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </main>
+
+  <script src="main.js?v=gh1"></script>
+</body>
+</html>
